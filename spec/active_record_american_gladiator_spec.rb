@@ -8,7 +8,7 @@ describe "ActiveRecord American Gladiator" do
       Item.create(name: "Crash Pad", status: "inactive")
 
       # Changeable Start
-      items = Item.all
+      items = Item.all.unscoped
       # Changeable End
 
       expect(items.count).to eq 3
@@ -16,13 +16,13 @@ describe "ActiveRecord American Gladiator" do
   end
 
   context "Powerball" do
-    xit "returns all items containing Powerball" do
+    it "returns all items containing Powerball" do
       Item.create(name: "Powerball Ball")
       Item.create(name: "Powerball Goal")
       Item.create(name: "Trap Door")
 
       # Changeable Start
-      items = Item.all
+      items = Item.where("name LIKE '%Powerball%'")
       # Changeable End
 
       expect(items.count).to eq(2)
@@ -30,7 +30,7 @@ describe "ActiveRecord American Gladiator" do
   end
 
   context "Hang Tough" do
-    xit "returns orders for 3 users in 2 queries (aka: Remove the N+1 query)" do
+    it "returns orders for 3 users in 2 queries (aka: Remove the N+1 query)" do
       diamond  = User.create(name: "Diamond")
       turbo    = User.create(name: "Turbo")
       laser    = User.create(name: "Laser")
@@ -45,7 +45,7 @@ describe "ActiveRecord American Gladiator" do
       order_amounts = []
 
       # Changeable Start
-      users = User.first(3)
+      users = User.includes(:orders).first(3)
       # Changeable End
 
       # Use eager loading to remove the N+1 query
@@ -163,4 +163,3 @@ describe "ActiveRecord American Gladiator" do
     end
   end
 end
-
