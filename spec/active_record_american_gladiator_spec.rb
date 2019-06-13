@@ -62,7 +62,7 @@ describe "ActiveRecord American Gladiator" do
   end
 
   context "The Maze" do
-    xit "returns all users that have placed an order" do
+    it "returns all users that have placed an order" do
       gemini = User.create(name: "Gemini")
       sky    = User.create(name: "Sky")
       nitro  = User.create(name: "Nitro")
@@ -72,9 +72,7 @@ describe "ActiveRecord American Gladiator" do
       nitro.orders.create
 
       # Changeable Start
-      active_users = User.all.select do |user|
-        user.orders.present?
-      end
+      active_users = User.joins(:orders).distinct
       # Changeable End
 
       # Hint: http://guides.rubyonrails.org/active_record_querying.html#joining-tables
@@ -84,7 +82,7 @@ describe "ActiveRecord American Gladiator" do
   end
 
   context "Breakthrough and Conquer" do
-    xit "returns all orders with Footballs and Wrestling Rings" do
+    it "returns all orders with Footballs and Wrestling Rings" do
       wrestling_ring = Item.create(name: "Wrestling Ring")
       football       = Item.create(name: "Football")
       sweat          = Item.create(name: "Sweat")
@@ -93,9 +91,11 @@ describe "ActiveRecord American Gladiator" do
       order_3        = Order.create(items: [football])
 
       # Changeable Start
-      orders = Order.all.select do |order|
-        order.items.include?(football) || order.items.include?(wrestling_ring)
-      end
+      # orders = Order.all.select do |order|
+      #   order.items.include?(football) || order.items.include?(wrestling_ring)
+      # end
+
+      orders = Order.joins(:items).where({ items: {name: ["Football", "Wrestling Ring"]} })
       # Changeable End
 
       # Hint: Take a look at the `Joins` section and the example that combines `joins` and `where` here: http://apidock.com/rails/ActiveRecord/QueryMethods/where
